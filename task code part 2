@@ -1,0 +1,36 @@
+from nltk import bigrams, trigrams
+from collections import Counter
+
+# Flatten the processed texts into lists of words
+disaster_words_flat = [word for text in disaster_tweets_df['processed_text'] for word in text.split()]
+normal_words_flat = [word for text in normal_tweets_df['processed_text'] for word in text.split()]
+
+# Count word occurrences
+disaster_word_counts = Counter(disaster_words_flat)
+normal_word_counts = Counter(normal_words_flat)
+
+# Extract top 20 words for disaster and normal tweets
+top_20_disaster_words = disaster_word_counts.most_common(20)
+top_20_normal_words = normal_word_counts.most_common(20)
+
+# Generate and count bigrams and trigrams for disaster tweets
+disaster_bigrams = Counter(bigrams(disaster_words_flat))
+disaster_trigrams = Counter(trigrams(disaster_words_flat))
+
+# Generate and count bigrams and trigrams for normal tweets
+normal_bigrams = Counter(bigrams(normal_words_flat))
+normal_trigrams = Counter(trigrams(normal_words_flat))
+
+# Extract top 20 bigrams and trigrams for disaster and normal tweets
+top_20_disaster_bigrams = disaster_bigrams.most_common(20)
+top_20_normal_bigrams = normal_bigrams.most_common(20)
+top_20_disaster_trigrams = disaster_trigrams.most_common(20)
+top_20_normal_trigrams = normal_trigrams.most_common(20)
+
+# Display the results
+print("Top 20 Words in Disaster Tweets:", top_20_disaster_words)
+print("Top 20 Words in Normal Tweets:", top_20_normal_words)
+print("Top 20 Bigrams in Disaster Tweets:", top_20_disaster_bigrams)
+print("Top 20 Bigrams in Normal Tweets:", top_20_normal_bigrams)
+print("Top 20 Trigrams in Disaster Tweets:", top_20_disaster_trigrams)
+print("Top 20 Trigrams in Normal Tweets:", top_20_normal_trigrams)
