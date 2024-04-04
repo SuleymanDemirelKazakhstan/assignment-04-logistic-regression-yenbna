@@ -1,0 +1,32 @@
+import pandas as pd
+import re
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
+import nltk
+
+# Ensure that necessary NLTK resources are downloaded
+nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('stopwords')
+
+def preprocess_text(text):
+    text = re.sub(r'\(\d{2}\.\d{2}\.\d{4}\)|[\U0001F1E0-\U0001F1FF]', '', text)  # Remove dates and country flags
+    text = re.sub(r'[^\w\s]', '', text)  # Remove punctuation
+    text = text.lower()  # Convert to lowercase
+    tokens = word_tokenize(text)  # Tokenize
+    lemmatizer = WordNetLemmatizer()
+    stop_words = set(stopwords.words('english'))
+    tokens = [lemmatizer.lemmatize(token) for token in tokens if token not in stop_words and token.isalpha()]  # Lemmatize and remove stop words
+    return ' '.join(tokens)  # Return the processed text as a string
+
+disaster_tweets_df = pd.read_csv('disasterTweets.csv')
+normal_tweets_df = pd.read_csv('normalTweets.csv')
+
+# Apply text preprocessing
+disaster_tweets_df['processed_text'] = disaster_tweets_df['Event'].apply(preprocess_text)
+normal_tweets_df['processed_text'] = normal_tweets_df['Tweet'].apply(preprocess_text)
+
+# Save the processed datasets
+disaster_tweets_df.to_csv('processed_disasterTweets.csv', index=False)
+normal_tweets_df.to_csv('processed_normalTweets.csv', index=False)
